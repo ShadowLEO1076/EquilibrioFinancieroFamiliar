@@ -1,6 +1,8 @@
 import type { Request, Response } from 'express';
 import { UserUseCaseSave } from '../../2_application/Users/userCreate/UserUseCaseSave.js';
 import type { UserUseCaseFindById } from '../../2_application/Users/userFindById/UserUseCaseFindById.js';
+import { UserUseCaseUpdate } from '../../2_application/Users/userUpdate/UserUseCaseUpdate.js';
+import { UserUseCaseDelete } from '../../2_application/Users/userDelete/userUseCaseDelete.js';
 
 
 export class UserController {
@@ -8,7 +10,9 @@ export class UserController {
     //irá creciendo con cada nuevo caso de uso
     constructor(
         private saveUser: UserUseCaseSave,
-        private findById: UserUseCaseFindById 
+        private findById: UserUseCaseFindById,
+        private updateUser: UserUseCaseUpdate,
+        private deleteUser: UserUseCaseDelete
     ) {}
 
     //método crear
@@ -43,4 +47,37 @@ export class UserController {
             res.status(500).json({error: err.message});
         }
     }
+
+      Update = async (req: Request, res: Response) =>{
+
+        try{
+            let {id} = req.params;
+            let userUpdate = req.body;
+
+            if (!id) {
+                 return res.status(400).json({ error: "Se requiere un ID" });
+             }
+
+             let user = await this.updateUser.execute(id, userUpdate);
+
+             return res.status(203).json({data: user})
+        }
+        catch(err: any){
+            res.status(500).json({ error: err.message});
+        }
+    }
+
+    Delete = async (req: Request, res: Response) => {
+      try {
+            const { id } = req.params;
+            if (!id) return res.status(400).json({ error: "Se requiere un ID" });
+
+            const result = await this.deleteUser.execute(id);
+            res.status(200).json(result);
+
+         }
+         catch(err: any) {
+            res.status(500).json({ error: err.message });
+        }
+    };
 }

@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
 //creamos un modelo, según la documentación de Mongo, un modelo compila un esquema
 //el primer parámetro busca en la base de datos, el segundo se encarga debe de asegurar
 //la integridad del archivo,el tercer parámetro crea la coleción en la base de datos.
-const userModel = mongoose.model('User', userSchema,'users');
+const userModel = mongoose.model('User', userSchema, 'users');
 
 export class MongoUserRepository implements IUserRepository{
 
@@ -44,7 +44,7 @@ export class MongoUserRepository implements IUserRepository{
         return this.toDomain(saved);
     }
 
-    //busca por Id
+    //busca por Id, pero no el _id de Mongo, nuestro id.
     async findById(id: string): Promise<User | null> {
 
       //halla un dato usando una de las variables del esquema
@@ -54,11 +54,23 @@ export class MongoUserRepository implements IUserRepository{
         return this.toDomain(userFound);
     }
 
-    update(user: User): Promise<User> {
-        throw new Error("Method not implemented.");
+    async update(user: User): Promise<User> {
+      //busca el objeto: por id, el nuevo objeto se llama user/o usa user, y nos devuelve
+      //la nueva versión del objeto
+       let update = await userModel.
+       findOneAndUpdate({id: user.id}, user, {new: true})
+       .lean();
+
+       return this.toDomain(update);
     }
-    delete(id: string): Promise<void> {
-        throw new Error("Method not implemented.");
+
+    async delete(id: string): Promise<void> {
+      //eliminar, pero usando la id perosnal, no la de mongo
+        let deleted = await userModel.deleteOne({id}).lean();
+
+         if (deleted.deletedCount === 0) {
+             throw new Error('Usuario con id ${id} no encontrado');
+         }
     }
 
     //función que transforma de nuestro Model a la entidad User
