@@ -26,6 +26,7 @@
     "mongoose": "^8.10.0",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.9",
+    "package": "^1.0.1",
     "validator": "^13.12.0"
   },
   "devDependencies": {

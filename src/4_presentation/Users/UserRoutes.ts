@@ -3,18 +3,24 @@ import { UserUseCaseSave } from '../../2_application/Users/userCreate/UserUseCas
 import { UserController } from './UserController.js';
 import { MongoUserRepository } from '../../3_infraestructure/repositories/Users/MongoUserRepository.js';
 import { UserUseCaseFindById } from '../../2_application/Users/userFindById/UserUseCaseFindById.js';
+import { UserUseCaseUpdate } from '../../2_application/Users/userUpdate/UserUseCaseUpdate.js';
+import { UserUseCaseDelete } from '../../2_application/Users/userDelete/userUseCaseDelete.js';
 
 //se instancia el repo
 const userRepo = new MongoUserRepository();
 //se instancian los servicios
 const userSave = new UserUseCaseSave(userRepo);
 const userFindId = new UserUseCaseFindById(userRepo);
-//Se instancia el controlador
-const controller = new UserController(userSave, userFindId);
+const userUpdateCont = new UserUseCaseUpdate(userRepo);
+const userDeleteCont = new UserUseCaseDelete(userRepo)
+//Se instancia el controlador, crece con cada nuevo servicio.
+const controller = new UserController(userSave, userFindId, userUpdateCont, userDeleteCont);
 //se crea el router
 const router = Router();
 //Se define el tipo de solicitud http, su url, y qué controlador usa
 router.post('/save', controller.Create);
 router.get('/:id', controller.FindById);
+router.put('/update/:id', controller.Update);
+router.delete('/:id', controller.Delete)
 //Se exporta
 export default router;
