@@ -1,8 +1,8 @@
 import express from "express";
 import cors from 'cors';
-import  {connectDB}  from "./4_conection/Conection.js"; 
-import UserRoutes from './3_infraestructure/Users/UserRoutes.js'
-import BudgetRoutes from './3_infraestructure/Budget/BudgetRoutes.js'
+import  {connectDB}  from "./3_infraestructure/conection/Conection.js"; 
+import UserRoutes from './4_presentation/Users/UserRoutes.js'
+import BudgetRoutes from './4_presentation/Budget/BudgetRoutes.js'
 
 
 const app = express();

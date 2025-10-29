@@ -1,8 +1,8 @@
 //aquí tendremos los esquemas y las implementaciones de los repositorio,
 //primero importamos todo lo necesario
 import mongoose from "mongoose";
-import type {IUserRepository} from "../../1_domain/Users/IUserRepository.js";
-import {User} from "../../1_domain/Users/User.js";
+import type {IUserRepository} from "../../../1_domain/Users/IUserRepository.js";
+import {User} from "../../../1_domain/Users/User.js";
 
 //schema de preferencias
 const userPreferenceSchema = new mongoose.Schema({

@@ -3,7 +3,7 @@ import { Router} from "express";
 import { BudgetUseCaseSave } from "../../2_application/Budget/budgetCreate/BudgetUseCaseSave.js";
 import { BudgetUseCaseFind } from "../../2_application/Budget/budgetGetAll/BudgetUseCaseFind.js";
 import { BudgetController } from "./BudgetController.js";
-import {MongoBudgetRepository} from "./MongoBudgetRepository.js"
+import { MongoBudgetRepository } from "../../3_infraestructure/repositories/Budget/MongoBudgetRepository.js";
 
 
 //se instancia el repo

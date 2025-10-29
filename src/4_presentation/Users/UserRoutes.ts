@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { UserUseCaseSave } from '../../2_application/Users/userCreate/UserUseCaseSave.js';
 import { UserController } from './UserController.js';
-import {MongoUserRepository} from './MongoUserRepository.js'
+import { MongoUserRepository } from '../../3_infraestructure/repositories/Users/MongoUserRepository.js';
 import { UserUseCaseFindById } from '../../2_application/Users/userFindById/UserUseCaseFindById.js';
 
 //se instancia el repo

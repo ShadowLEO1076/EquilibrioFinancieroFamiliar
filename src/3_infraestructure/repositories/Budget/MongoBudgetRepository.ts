@@ -1,8 +1,8 @@
 //aquí tendremos los esquemas y las implementaciones de los repositorio,
 //primero importamos todo lo necesario
 import mongoose from "mongoose";
-import type {IBudgetRepository} from "../../1_domain/Budget/IBudgetRepository.js";
-import {Budget} from "../../1_domain/Budget/Budget.js";
+import type {IBudgetRepository} from "../../../1_domain/Budget/IBudgetRepository.js";
+import {Budget} from "../../../1_domain/Budget/Budget.js";
 
 //schema de presupuesto
 const budgetSchema = new mongoose.Schema({
