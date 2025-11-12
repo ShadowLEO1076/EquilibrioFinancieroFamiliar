@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
 
 //creamos un modelo, según la documentación de Mongo, un modelo compila un esquema
 //el primer parámetro busca en la base de datos, el segundo se encarga debe de asegurar
-//la integridad del archivo,el tercer parámetro crea la coleción en la base de datos.
+//la integridad del archivo,el tercer parámetro crea la colección en la base de datos.
 const userModel = mongoose.model('User', userSchema, 'users');
 
 export class MongoUserRepository implements IUserRepository{
@@ -49,7 +49,7 @@ export class MongoUserRepository implements IUserRepository{
 
       //halla un dato usando una de las variables del esquema
       //lean permite convertir el modelo en un objeto TS/Js
-        const userFound = await userModel.findOne({id}).lean();
+        const userFound = await userModel.findById(id).lean();
 
         return this.toDomain(userFound);
     }

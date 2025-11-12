@@ -13,7 +13,7 @@ export interface UserPreferences {
 //clase necesaria para que el usuario pueda ser usado.
 export class User {
   constructor(
-    public id: string,
+    public id: string, //id de mongo, __id
     public email: string,
     public name: string,
     public currency: string,
