@@ -16,8 +16,14 @@ const userPreferenceSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
 
     id: String,
-    email: String,
-    name: String,
+    email: {
+      type: String,
+      unique: true
+    },
+    name:{
+      type: String,
+      unique: true
+    },
     currency: String,
     language: String,
     timezone: String,
@@ -36,6 +42,20 @@ const userModel = mongoose.model('User', userSchema, 'users');
 export class MongoUserRepository implements IUserRepository{
 
     async save(user: User): Promise<User> {
+
+        //todo: asegurar que el correo y el nombre de usuario no este siendo usado al crear un nuevo usuario usuario.
+        let verificarEmailNameUser = await userModel.findOne({
+          $or: [{
+            email: user.email,
+            name: user.name
+            }
+          ],
+        })
+
+        if(verificarEmailNameUser){
+          throw new Error ("El correo o el nombre de usuario ya están en uso.");
+        }
+
         //creo mi modelo
         const newUser = new userModel(user);
         //llamamos a save

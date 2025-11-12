@@ -38,7 +38,6 @@ export class MongoBudgetRepository implements IBudgetRepository{
 
     getById(id: string): Promise<Budget | null> {
 
-
         throw new Error("Method not implemented.");
     }
     update(budget: Budget): Promise<void> {

@@ -10,7 +10,7 @@ export class UserUseCaseSave{
     constructor(private readonly userRepo: IUserRepository){}
 
     //Omit permite crear o ingrear la entidad omitiendo los datos que pasemos tras la coma, cool
-    async execute(input: Omit<User, 'createdAt'| 'updatedAt'>){
+    async execute(input: Omit<User, 'updatedAt'>){
 
         let user = new User(
          input.id,
