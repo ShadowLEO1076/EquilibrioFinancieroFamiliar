@@ -5,13 +5,15 @@ import type {IUserRepository} from "../../../1_domain/Users/IUserRepository.js";
 import {User} from "../../../1_domain/Users/User.js";
 
 //schema de preferencias
+//pasar a PROFILE
+/*
 const userPreferenceSchema = new mongoose.Schema({
   monthlyBudget: Number,
   alertThreshold: Number,
   defaultCurrency: String,
   reportsFrequency: String
 });
-
+*/
 //schema de usuario
 const userSchema = new mongoose.Schema({
 
@@ -20,14 +22,15 @@ const userSchema = new mongoose.Schema({
       type: String,
       unique: true
     },
-    name:{
+    username:{
       type: String,
       unique: true
     },
-    currency: String,
+    password: String,
+    //currency: String,
     language: String,
     timezone: String,
-    preferences: userPreferenceSchema,
+   // preferences: userPreferenceSchema,
     isActive: Boolean,
     familyId: String,
     createdAt: Date,
@@ -43,11 +46,12 @@ export class MongoUserRepository implements IUserRepository{
 
     async save(user: User): Promise<User> {
 
-        //todo: asegurar que el correo y el nombre de usuario no este siendo usado al crear un nuevo usuario usuario.
+        //todo: asegurar que el correo y el nombre de usuario no este siendo usado al crear un nuevo usuario usuario.--COMPLETADO
+        //tod: crear verificaciones separas, el usuario o nosotros queremos saber si el usuario o el correo está en uso.
         let verificarEmailNameUser = await userModel.findOne({
           $or: [{
             email: user.email,
-            name: user.name
+            name: user.username
             }
           ],
         })
@@ -98,11 +102,12 @@ export class MongoUserRepository implements IUserRepository{
       return new User(
       doc.id,
       doc.email,
-      doc.name,
-      doc.currency,
+      doc.username,
+      doc.password,
+      //doc.currency,
       doc.language,
       doc.timezone,
-      doc.preferences,
+      //doc.preferences,
       doc.isActive,
       doc.familyId,
       doc.createdAt,

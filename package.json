@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "start": "node dist/main.js",
+    "start": "nodemon dist/main.js",
     "dev": "nodemon --exec node --loader ts-node/esm src/main.ts",
     "dev:watch": "nodemon --exec node --loader ts-node/esm src/main.ts",
     "clean": "rm -rf dist"

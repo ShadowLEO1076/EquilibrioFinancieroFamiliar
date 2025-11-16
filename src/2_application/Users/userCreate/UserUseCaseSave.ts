@@ -15,11 +15,13 @@ export class UserUseCaseSave{
         let user = new User(
          input.id,
          input.email,
-         input.name,
-         input.currency,
+         input.username,
+         input.password,
+        // input.name,
+        // input.currency,
          input.language,
          input.timezone,
-         input.preferences,
+        // input.preferences,
          true,  //isActive
          input.familyId
         );
