@@ -108,7 +108,7 @@ export class MongoUserRepository implements IUserRepository{
     //función que transforma de nuestro Model a la entidad User
      private toDomain(doc: any): User {
       return new User(
-      doc.id,
+      doc._id.toString(),
       doc.email,
       doc.username,
       doc.password,
@@ -117,7 +117,7 @@ export class MongoUserRepository implements IUserRepository{
       doc.timezone,
       //doc.preferences,
       doc.isActive,
-      doc.familyId,
+     // doc.familyId,
       doc.createdAt,
       doc.updatedAt
     );

@@ -1,7 +1,7 @@
 // Imports necesarios
 import { v4 as uuidv4 } from 'uuid';
-import { FamilyRole, FamilyMembership } from "../../../1_domain/Families/FamilyMembership.js";
-import type { IFamilyMembershipRepository } from "../../../1_domain/Families/IFamilyMembershipRepository.js";
+//import { FamilyRole, FamilyMembership } from "../../../1_domain/Families/FamilyMembership.js"; temporal
+//import type { IFamilyMembershipRepository } from "../../../1_domain/Families/IFamilyMembershipRepository.js"; TEMPORAL
 import type { IFamilyRepository } from "../../../1_domain/Family/IFamilyRepository.js";
 import type { IProfileRepository } from "../../../1_domain/Profile/IProfileRepository.js";
 
@@ -10,7 +10,7 @@ export interface JoinFamilyInput {
     profileId: string;    // El ID del perfil que intenta unirse (quién)
     inviteCode: string;   // El código de la familia (a dónde)
 }
-
+/*
 export class FamilyMembershipUseCaseCreate {
     
     constructor(
@@ -58,3 +58,4 @@ export class FamilyMembershipUseCaseCreate {
         return await this.membershipRepo.save(newMembership);
     }
 }
+    */ //TEMPORAL

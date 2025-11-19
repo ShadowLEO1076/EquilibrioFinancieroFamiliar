@@ -1,7 +1,7 @@
 //importe lo que haya en la carpeta
 import { User } from "./User.js";
 
-//creación de la interfaz
+//creación de la interfaz usada para base de datos
 
 export interface IUserRepository{
 

@@ -4,6 +4,7 @@ import type { UserUseCaseFindById } from '../../2_application/Users/userFindById
 import { UserUseCaseUpdate } from '../../2_application/Users/userUpdate/UserUseCaseUpdate.js';
 import { UserUseCaseDelete } from '../../2_application/Users/userDelete/userUseCaseDelete.js';
 import { UserUseCaseFindByEmail } from '../../2_application/Users/userUseCaseFindByEmail/UserUseCaseFindByEmail.js';
+import { UserUseCaseLogin } from '../../2_application/Users/userLogin/UserUseCaseLogin.js';
 
 
 export class UserController {
@@ -14,8 +15,23 @@ export class UserController {
         private findById: UserUseCaseFindById,
         private updateUser: UserUseCaseUpdate,
         private deleteUser: UserUseCaseDelete,
-        private findByEmail: UserUseCaseFindByEmail
+        private findByEmail: UserUseCaseFindByEmail,
+        private login: UserUseCaseLogin
     ) {}
+
+    Login = async(req: Request, res: Response) =>{
+
+        try{
+            let {email, password} = req.body;
+
+            let result = await this.login.execute(email, password);
+
+            res.json(result);
+        }
+        catch(err: any){
+            res.status(400).json({error: err.message});
+        }
+    }
 
     FindByEmail = async (req: Request, res: Response) =>{
         try{

@@ -1,4 +1,4 @@
-import { Profile } from "../../../1_domain/Profile/Profile.js";    
+import { Profile } from "../../../1_domain/Profile/Profile.js";
 import type { IProfileRepository } from "../../../1_domain/Profile/IProfileRepository.js";
 
 // El DTO de entrada es simple: solo el ID del usuario
@@ -17,6 +17,7 @@ export class ProfileUseCaseFindAllByUserId {
      * @param input Contiene el ID de la cuenta del usuario.
      * @returns Una promesa que resuelve con un array de entidades Profile.
      */
+    /*
     async execute(input: FindProfilesByUserInput): Promise<Profile[]> {
         
         // 1. Validación de Dominio (mínima, asegura que el ID no esté vacío)
@@ -26,6 +27,7 @@ export class ProfileUseCaseFindAllByUserId {
 
         // 2. Consulta al Repositorio
         // Llama al método que definiste en IProfileRepository
-        return await this.profileRepo.findAllByUserId(input.userId);
+        //return await this.profileRepo.findAllByUserId(input.userId);
  }
+*/ // TEMPORAL
 }
