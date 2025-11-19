@@ -9,5 +9,5 @@ export interface IUserRepository{
     findById(id: string): Promise<User | null>; //buscará una entidad, así que... Necesita solo la id
     update(user: User): Promise<User>; //devolverá el usuario actualizado para leerlo
     delete(id: string): Promise<void>; //se eliminará la entidadd, por tanto necesitamos un void
-    
+    findByEmail(userEmail: string): Promise<User | null>; //buscar por email, es más sensato y seguro para ciertos casos.
 }

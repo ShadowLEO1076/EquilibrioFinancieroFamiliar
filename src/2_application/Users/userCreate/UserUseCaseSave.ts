@@ -15,15 +15,13 @@ export class UserUseCaseSave{
         let user = new User(
          input.id,
          input.email,
-         input.username,
-         input.password,
-        // input.name,
-        // input.currency,
+         input.username,  // MATE DEVERIAMOS HASHEAR LA CONTRASEÑA ANTES DE GUARDARLA
+         input.password,  // ANTES DE HACER NEW USER AQUÍ
+        
          input.language,
          input.timezone,
         // input.preferences,
          true,  //isActive
-         input.familyId
         );
 
         return await this.userRepo.save(user);
