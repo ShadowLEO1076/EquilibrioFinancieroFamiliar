@@ -13,6 +13,7 @@ dotenv.config();
 const allowedOrigins = [
   process.env.CORS_ORIGIN_DEV_1, // -> http://localhost:3000
   process.env.CORS_ORIGIN_DEV_2, // -> http://192.168.100.22:3000
+  process.env.CORS_ORIGIN_DEV_3, // -> http://192.168.56.1:3000
   process.env.CORS_ORIGIN_PROD   // -> http://192.168.100.22:3000/test-api
 ];
 
@@ -28,7 +29,7 @@ export const corsOptions: cors.CorsOptions = {
       callback(null, true);
     } else {
       // ¡No está en la lista! ¡Rechazado!
-      callback(new Error('¡Alto ahí! No estás en la lista VIP de CORS. ⛔'));
+      callback(new Error('¡Alto ahí! No estás en la lista VIP de CORS. '));
     }
   },
   credentials: true // ¡SÚPER IMPORTANTE! Para que nos deje enviar cookies (el JWT)

@@ -5,23 +5,32 @@ import type {IUserRepository} from "../../../1_domain/Users/IUserRepository.js";
 import {User} from "../../../1_domain/Users/User.js";
 
 //schema de preferencias
+//pasar a PROFILE
+/*
 const userPreferenceSchema = new mongoose.Schema({
   monthlyBudget: Number,
   alertThreshold: Number,
   defaultCurrency: String,
   reportsFrequency: String
 });
-
+*/
 //schema de usuario
 const userSchema = new mongoose.Schema({
 
     id: String,
-    email: String,
-    name: String,
-    currency: String,
+    email: {
+      type: String,
+      unique: true
+    },
+    username:{
+      type: String,
+      unique: true
+    },
+    password: String,
+    //currency: String,
     language: String,
     timezone: String,
-    preferences: userPreferenceSchema,
+   // preferences: userPreferenceSchema,
     isActive: Boolean,
     familyId: String,
     createdAt: Date,
@@ -30,12 +39,27 @@ const userSchema = new mongoose.Schema({
 
 //creamos un modelo, según la documentación de Mongo, un modelo compila un esquema
 //el primer parámetro busca en la base de datos, el segundo se encarga debe de asegurar
-//la integridad del archivo,el tercer parámetro crea la coleción en la base de datos.
+//la integridad del archivo,el tercer parámetro crea la colección en la base de datos.
 const userModel = mongoose.model('User', userSchema, 'users');
 
 export class MongoUserRepository implements IUserRepository{
 
     async save(user: User): Promise<User> {
+
+        //todo: asegurar que el correo y el nombre de usuario no este siendo usado al crear un nuevo usuario usuario.--COMPLETADO
+        //tod: crear verificaciones separas, el usuario o nosotros queremos saber si el usuario o el correo está en uso.
+        let verificarEmailNameUser = await userModel.findOne({
+          $or: [{
+            email: user.email,
+            name: user.username
+            }
+          ],
+        })
+
+        if(verificarEmailNameUser){
+          throw new Error ("El correo o el nombre de usuario ya están en uso.");
+        }
+
         //creo mi modelo
         const newUser = new userModel(user);
         //llamamos a save
@@ -49,7 +73,7 @@ export class MongoUserRepository implements IUserRepository{
 
       //halla un dato usando una de las variables del esquema
       //lean permite convertir el modelo en un objeto TS/Js
-        const userFound = await userModel.findOne({id}).lean();
+        const userFound = await userModel.findById(id).lean();
 
         return this.toDomain(userFound);
     }
@@ -78,11 +102,12 @@ export class MongoUserRepository implements IUserRepository{
       return new User(
       doc.id,
       doc.email,
-      doc.name,
-      doc.currency,
+      doc.username,
+      doc.password,
+      //doc.currency,
       doc.language,
       doc.timezone,
-      doc.preferences,
+      //doc.preferences,
       doc.isActive,
       doc.familyId,
       doc.createdAt,

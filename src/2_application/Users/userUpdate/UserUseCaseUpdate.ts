@@ -5,16 +5,16 @@ export class UserUseCaseUpdate{
 
      constructor (private userRepo: IUserRepository){}
 
-    //la loógica será que, con el id en el url y con el body, podré actaulizar los datos
+    //la lógica será que, con el id en el url y con el body, podré actaulizar los datos
     async execute (id: string, updatedUser: Partial<User>) {
-        //se busca si exsite el registro
+        //se busca si existe el registro
         let userFound = await this.userRepo.findById(id);
         //si no, tirar error
         if(!userFound) {
             throw new Error("User not found");
         }
         //aplicar cambios usando el operador de propagación
-
+        
         let updated = {...userFound, ...updatedUser, updatedAt: new Date()};
 
         //reglas de dominio adicional si se necesitacen

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "start": "node dist/main.js",
+    "start": "nodemon dist/main.js",
     "dev": "nodemon --exec node --loader ts-node/esm src/main.ts",
     "dev:watch": "nodemon --exec node --loader ts-node/esm src/main.ts",
     "clean": "rm -rf dist"
@@ -28,11 +28,13 @@
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.9",
     "package": "^1.0.1",
+    "uuid": "^13.0.0",
     "validator": "^13.12.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
+    "@types/uuid": "^10.0.0",
     "@types/validator": "^13.15.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"

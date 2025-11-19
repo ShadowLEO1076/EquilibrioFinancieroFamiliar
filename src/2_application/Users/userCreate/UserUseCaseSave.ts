@@ -10,18 +10,18 @@ export class UserUseCaseSave{
     constructor(private readonly userRepo: IUserRepository){}
 
     //Omit permite crear o ingrear la entidad omitiendo los datos que pasemos tras la coma, cool
-    async execute(input: Omit<User, 'createdAt'| 'updatedAt'>){
+    async execute(input: Omit<User, 'updatedAt'>){
 
         let user = new User(
          input.id,
          input.email,
-         input.name,
-         input.currency,
+         input.username,  // MATE DEVERIAMOS HASHEAR LA CONTRASEÑA ANTES DE GUARDARLA
+         input.password,  // ANTES DE HACER NEW USER AQUÍ
+        
          input.language,
          input.timezone,
-         input.preferences,
+        // input.preferences,
          true,  //isActive
-         input.familyId
         );
 
         return await this.userRepo.save(user);
