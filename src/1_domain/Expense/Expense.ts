@@ -17,18 +17,18 @@ export interface RecurrencePattern{
 export class Expense {
 
     constructor(
-        public id: string,
-        public amount: number,
-        public description: string,
-        public category: Category,
+        public id: string, //id único de mongo
+        public amount: number, //cantidad del gasto
+        public description: string, //qué se hizo para que suceda el gasto
+        public category: Category, //categorias de pagos
         public date: Date,
-        public paymentMethod: PaymentMethod,
-        public userId: string, //usuario 
-        public familyId?: string,
-        public tags: string [] = [], //toca instanciar un array vacio
-        public recurring: boolean = false,
-        public recurrencePattern?: RecurrencePattern,
-        public createdAt?: Date,
+        public paymentMethod: PaymentMethod, //tipo de pago, toca ver si dejamos los de aquí o no.
+        public profileId: string, //perfil de un usuario 
+        public familyId?: string, //si el perfil es parte de una familia
+        public tags: string [] = [], //toca instanciar un array vacio, aquí va algunas tagas... Lo voy a quitar.
+        public recurring: boolean = false, //podemos cambairlo, pero no es necesario
+        public recurrencePattern?: RecurrencePattern, //mismo principio de antes
+        public createdAt?: Date,    
         public updatedAt?: Date
     ){
 
@@ -40,7 +40,7 @@ export class Expense {
     this.category = category;
     this.date = date;
     this.paymentMethod = paymentMethod;
-    this.userId = userId;
+    this.profileId = profileId;
     this.familyId = familyId;
     this.tags = tags;
     this.recurring = recurring;

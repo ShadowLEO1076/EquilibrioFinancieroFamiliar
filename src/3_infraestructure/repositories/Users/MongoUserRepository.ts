@@ -44,6 +44,14 @@ const userModel = mongoose.model('User', userSchema, 'users');
 
 export class MongoUserRepository implements IUserRepository{
 
+    async findByEmail(userEmail: string): Promise<User | null> {
+    
+      let user = await userModel.findOne({email: userEmail}).lean();
+      if(!user) return null;
+
+      return this.toDomain(user);
+   }
+
     async save(user: User): Promise<User> {
 
         //todo: asegurar que el correo y el nombre de usuario no este siendo usado al crear un nuevo usuario usuario.--COMPLETADO
@@ -68,7 +76,7 @@ export class MongoUserRepository implements IUserRepository{
         return this.toDomain(saved);
     }
 
-    //busca por Id, pero no el _id de Mongo, nuestro id.
+    //buscar por id de mongo, es sencillo y seguro.
     async findById(id: string): Promise<User | null> {
 
       //halla un dato usando una de las variables del esquema
@@ -100,7 +108,7 @@ export class MongoUserRepository implements IUserRepository{
     //función que transforma de nuestro Model a la entidad User
      private toDomain(doc: any): User {
       return new User(
-      doc.id,
+      doc._id.toString(),
       doc.email,
       doc.username,
       doc.password,
@@ -109,7 +117,7 @@ export class MongoUserRepository implements IUserRepository{
       doc.timezone,
       //doc.preferences,
       doc.isActive,
-      doc.familyId,
+     // doc.familyId,
       doc.createdAt,
       doc.updatedAt
     );
