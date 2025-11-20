@@ -11,7 +11,7 @@ export class Profile {
     public userId: string,          // <--- Conexión con la Cuenta (User)
     public name: string,            // Ej: "Guille Personal", "Casa"
     public preferences: ProfilePreferences, // <--- Lógica Financiera
-    public avatar?: string,         // Opcional: Para el futuro
+    //public avatar?: string,         // Opcional: Para el futuro
     public createdAt: Date = new Date(),
     public updatedAt: Date = new Date()
   ) {

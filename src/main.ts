@@ -1,41 +1,42 @@
 // src/main.ts
 
+// 1. CARGAR VARIABLES DE ENTORNO PRIMERO
+// Es vital hacerlo antes de importar archivos que usen process.env
+import dotenv from 'dotenv'; 
+dotenv.config(); 
+
 import express from "express";
 import cors from 'cors';
-import dotenv from 'dotenv'; // <-- ¡AÑADIDO! Para leer el .env
-import { connectDB } from "./3_infraestructure/conection/Conection.js"; 
 
-// --- ¡CAMBIO #1: IMPORTA NUESTRO Bouncer! ---
-// ¡Importamos las opciones que creamos en la capa de infra!
+// 2. IMPORTAR INFRAESTRUCTURA
+import { connectDB } from "./3_infraestructure/conection/Conection.js"; 
 import { corsOptions } from './3_infraestructure/config/cors.config.js';
 
-// --- Tus rutas (¡perfecto!) ---
-import UserRoutes from './4_presentation/Users/UserRoutes.js'
-import BudgetRoutes from './4_presentation/Budget/BudgetRoutes.js'
-// ... aquí importarás Income, Expense, etc. ...
+// 3. IMPORTAR RUTAS (Capa de Presentación)
+import UserRoutes from './4_presentation/Users/UserRoutes.js';
+import BudgetRoutes from './4_presentation/Budget/BudgetRoutes.js';
+import ProfileRoutes from './/4_presentation/Profiles/ProfilesRoutes.js'; 
 
-// --- ¡CAMBIO #2: Cargar las variables de entorno! ---
-// ¡Debe ir ANTES de que 'corsOptions' las necesite!
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// --- Middlewares ---
+// --- MIDDLEWARES ---
 
-// --- ¡CAMBIO #3: USA NUESTRO Bouncer! ---
-// ¡En lugar del cors() por defecto, le pasamos nuestras reglas!
+// Usamos nuestro Bouncer (CORS configurado)
 app.use(cors(corsOptions)); 
 
+// Parseo de JSON para entender los req.body
 app.use(express.json());
 
 
-// --- Tus rutas (¡perfecto!) ---
+// --- RUTAS DE LA API ---
 app.use('/users', UserRoutes);
 app.use('/budgets', BudgetRoutes);
-// ... aquí usarás las otras rutas ...
+app.use('/profiles', ProfileRoutes); 
 
-// Ruta de salud
+
+// --- RUTA DE SALUD (Health Check) ---
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'OK', 
@@ -44,10 +45,12 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Iniciar servidor
+// --- INICIO DEL SERVIDOR ---
+// Primero conectamos a BD, luego escuchamos
 connectDB().then(() => {
   app.listen(PORT, () => {
-    console.log(`¡Cocina (Backend) lista en http://localhost:${PORT}! 🍳`);
-    console.log(`Health check: http://localhost:${PORT}/health`);
+    console.log(`\n ¡Despegue exitoso!`);
+    console.log(`  (Backend) lista en: http://localhost:${PORT}`);
+    console.log(` saludable check: http://localhost:${PORT}/health`);
   });
 });

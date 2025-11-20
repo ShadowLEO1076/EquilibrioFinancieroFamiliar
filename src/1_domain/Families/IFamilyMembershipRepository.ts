@@ -1,8 +1,8 @@
 //importe lo que haya en la carpeta
-//import { FamilyMembership } from "./FamilyMembership.js"; TEMPORAL
+import { FamilyMembership } from "./FamilyMembership.js"; 
 
-//creación de la interfaz
-/*
+
+
 export interface IFamilyMembershipRepository{
 
     save(familymembership: FamilyMembership): Promise<FamilyMembership>; // será un método asincrónico de save que devolverá la entidad guardada
@@ -11,4 +11,7 @@ export interface IFamilyMembershipRepository{
     delete(id: string): Promise<void>; //se eliminará la entidadd, por tanto necesitamos un void
     findByProfileAndFamilyId(profileId: string, familyId: string): Promise<FamilyMembership | null>; //buscará una entidad por profileId y familyId 
     
-}*/ //TEMPORAL
+}
+
+
+
