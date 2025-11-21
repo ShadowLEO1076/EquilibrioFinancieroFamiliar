@@ -10,5 +10,7 @@ export interface IFamilyRepository{
     update(family: Family): Promise<Family>; //devolverá el usuario actualizado para leerlo
     delete(id: string): Promise<void>; //se eliminará la entidadd, por tanto necesitamos un void
     findByInviteCode(inviteCode: string): Promise<Family | null>; //buscará una entidad por código de invitación    
-    
+    // ... métodos anteriores ...
+
 }
+

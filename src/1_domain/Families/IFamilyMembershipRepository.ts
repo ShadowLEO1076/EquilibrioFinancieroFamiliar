@@ -10,7 +10,10 @@ export interface IFamilyMembershipRepository{
     update(familymembership: FamilyMembership): Promise<FamilyMembership>; //devolverá el usuario actualizado para leerlo
     delete(id: string): Promise<void>; //se eliminará la entidadd, por tanto necesitamos un void
     findByProfileAndFamilyId(profileId: string, familyId: string): Promise<FamilyMembership | null>; //buscará una entidad por profileId y familyId 
-    
+    findAllByProfileId(profileId: string): Promise<FamilyMembership[]>; // <--- ¡AGREGA ESTO!
+    findAllByFamilyId(familyId: string): Promise<FamilyMembership[]>;   // <--- Y ESTO (Para ver quién está en la familia
+
+
 }
 
 

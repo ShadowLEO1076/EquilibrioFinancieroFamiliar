@@ -1,26 +1,37 @@
-// igual que UserRoutes, pero para budget
-import { Router} from "express";
-import { BudgetUseCaseSave } from "../../2_application/Budget/budgetCreate/BudgetUseCaseSave.js";
-import { BudgetUseCaseFind } from "../../2_application/Budget/budgetGetAll/BudgetUseCaseFind.js";
-import { BudgetController } from "./BudgetController.js";
-import { MongoBudgetRepository } from "../../3_infraestructure/repositories/Budget/MongoBudgetRepository.js";
+// src/4_presentation/routes/BudgetRoutes.ts
+import { Router } from 'express';
+import { MongoBudgetRepository } from '../../3_infraestructure/repositories/Budget/MongoBudgetRepository.js';
+import { BudgetUseCaseCreate } from '../../2_application/Budget/budgetCreate/BudgetUseCaseCreate.js';   
+import { BudgetUseCaseFindAllByProfile, BudgetUseCaseFindById } from '../../2_application/Budget/budgetFindById/BudgetUseCaseFind.js'; 
+import { BudgetUseCaseUpdate } from '../../2_application/Budget/budgetUpdate/BudgetUseCaseUpdate.js';
+import { BudgetUseCaseDelete } from  '../../2_application/Budget/budgetdelete/BudgetUseCaseDelete.js';
+import { BudgetController } from '../Budget/BudgetController.js';   
 
+// Inyección
+const repo = new MongoBudgetRepository();
+const createUC = new BudgetUseCaseCreate(repo);
+const findAllUC = new BudgetUseCaseFindAllByProfile(repo);
+const findByIdUC = new BudgetUseCaseFindById(repo);
+const updateUC = new BudgetUseCaseUpdate(repo);
+const deleteUC = new BudgetUseCaseDelete(repo);
 
-//se instancia el repo
-const budgetRepo = new MongoBudgetRepository();
-//se instancian los servicios
-const budgetSave = new BudgetUseCaseSave(budgetRepo);
+const controller = new BudgetController(createUC, findAllUC, findByIdUC, updateUC, deleteUC);
 
-const budgetGetAll = new BudgetUseCaseFind(budgetRepo); 
-//Se instancia el controlador
-const controller = new BudgetController(budgetSave, budgetGetAll);
-//se crea el router
 const router = Router();
 
-//Se define el tipo de solicitud http, su url, y qué controlador usa
-router.post('/save', controller.create);
-router.get('/all', controller.getAll);
-//Se exporta
+// POST /budgets/
+router.post('/', controller.create);
+
+// GET /budgets/profile/:profileId (Dashboard)
+router.get('/profile/:profileId', controller.getAllByProfile);
+
+// GET /budgets/:id (Detalle)
+router.get('/:id', controller.getById);
+
+// PUT /budgets/:id (Actualizar)
+router.put('/:id', controller.update);
+
+// DELETE /budgets/:id
+router.delete('/:id', controller.delete);
+
 export default router;
-
-

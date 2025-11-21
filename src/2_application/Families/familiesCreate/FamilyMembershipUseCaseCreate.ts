@@ -1,41 +1,43 @@
-// Imports necesarios
+// src/2_application/Families/FamilyMembershipUseCaseCreate.ts
+
 import { v4 as uuidv4 } from 'uuid';
-//import { FamilyRole, FamilyMembership } from "../../../1_domain/Families/FamilyMembership.js"; temporal
-//import type { IFamilyMembershipRepository } from "../../../1_domain/Families/IFamilyMembershipRepository.js"; TEMPORAL
+
+//  ¡DESCOMENTAMOS ESTO! Son vitales para que funcione
+import { FamilyRole, FamilyMembership } from "../../../1_domain/Families/FamilyMembership.js";
+import type { IFamilyMembershipRepository } from "../../../1_domain/Families/IFamilyMembershipRepository.js";
+
 import type { IFamilyRepository } from "../../../1_domain/Family/IFamilyRepository.js";
 import type { IProfileRepository } from "../../../1_domain/Profile/IProfileRepository.js";
 
-// --- 1. DTO de Entrada ---
+// --- DTO de Entrada ---
 export interface JoinFamilyInput {
     profileId: string;    // El ID del perfil que intenta unirse (quién)
     inviteCode: string;   // El código de la familia (a dónde)
 }
-/*
+
 export class FamilyMembershipUseCaseCreate {
     
     constructor(
         private readonly membershipRepo: IFamilyMembershipRepository,
         private readonly familyRepo: IFamilyRepository,
-        private readonly profileRepo: IProfileRepository // Para validar que el perfil exista
+        private readonly profileRepo: IProfileRepository 
     ){}
 
     async execute(input: JoinFamilyInput): Promise<FamilyMembership> {
 
-        // 1. Validar Existencia del Perfil
+        // 1. Validar Existencia del Perfil (Actor)
         const joiningProfile = await this.profileRepo.findById(input.profileId);
         if (!joiningProfile) {
             throw new Error('El perfil de usuario que intenta unirse no existe.');
         }
 
-        // 2. Buscar la Familia por Código de Invitación
-        // Nota: Asegúrate que findByInviteCode esté en IFamilyRepository
+        // 2. Buscar la Familia por Código de Invitación (Destino)
         const familyToJoin = await this.familyRepo.findByInviteCode(input.inviteCode);
         if (!familyToJoin) {
             throw new Error('El código de invitación no es válido o la familia no existe.');
         }
 
-        // 3. Validar que el Perfil NO esté ya en la Familia
-        // Nota: Necesitas un método en el repositorio que busque por ambos IDs.
+        // 3. Validar que el Perfil NO esté ya en la Familia (Duplicidad)
         const existingMembership = await this.membershipRepo.findByProfileAndFamilyId(
             input.profileId, 
             familyToJoin.id
@@ -51,11 +53,10 @@ export class FamilyMembershipUseCaseCreate {
             newMembershipId,
             input.profileId,
             familyToJoin.id,
-            'MEMBER' as FamilyRole // El rol por defecto al unirse por invitación es MEMBER
+            'MEMBER' as FamilyRole // El rol por defecto al unirse por invitación
         );
 
         // 5. Guardar la nueva Membresía
         return await this.membershipRepo.save(newMembership);
     }
 }
-    */ //TEMPORAL
