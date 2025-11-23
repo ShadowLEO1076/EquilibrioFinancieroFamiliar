@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
     timezone: String,
    // preferences: userPreferenceSchema,
     isActive: Boolean,
-    familyId: String,
+    //familyId: String,
     createdAt: Date,
     updatedAt: Date
 });

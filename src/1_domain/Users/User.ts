@@ -35,7 +35,7 @@ export class User {
     // y dejar la entidad más flexible. Pero si lo dejas aquí, está bien
     // siempre que sepas que la contraseña plana cumple esto.
      if (!validator.isStrongPassword(password, {
-        minLength: 6,
+        minLength: 8,
         minUppercase: 1,
         minNumbers: 2,
         minSymbols: 1

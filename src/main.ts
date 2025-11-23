@@ -14,7 +14,7 @@ import { corsOptions } from './3_infraestructure/config/cors.config.js';
 // 3. IMPORTAR RUTAS (Capa de Presentación)
 import UserRoutes from './4_presentation/Users/UserRoutes.js';
 import BudgetRoutes from './4_presentation/Budget/BudgetRoutes.js';
-
+import CategoryRoutes from './4_presentation/Category/CategoryRoutes.js';
 
 import ProfileRoutes from './4_presentation/Profiles/ProfilesRoutes.js'; 
 
@@ -34,7 +34,7 @@ app.use(express.json());
 app.use('/users', UserRoutes);
 app.use('/budgets', BudgetRoutes);
 app.use('/profiles', ProfileRoutes); 
-
+app.use('/categories', CategoryRoutes);
 //  ¡ACTIVAMOS EL MÓDULO DE FAMILIAS!
 // Todas las rutas empezarán con /families
 app.use('/families', FamilyRoutes);

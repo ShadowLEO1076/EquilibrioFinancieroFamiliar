@@ -45,7 +45,7 @@ const ProfileSchema = new Schema({
 });
 
 // El Modelo Compilado
-const ProfileModel = mongoose.model<ProfileDocument>('Profile', ProfileSchema, 'profiles');
+export const ProfileModel = mongoose.model<ProfileDocument>('Profile', ProfileSchema, 'profiles');
 
 
 
