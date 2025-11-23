@@ -2,7 +2,11 @@
 import { Request, Response, NextFunction } from "express";
 import { JwtAuthTokenService } from "../../2_application/JwtAuthTokenService/JwtAuthTokenService.js";
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const tokenService = new JwtAuthTokenService(process.env.SECRET_JWT!);
+
 
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
@@ -31,3 +35,4 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     return res.status(401).json({ error: "Invalid or expired token" });
   }
 }
+
