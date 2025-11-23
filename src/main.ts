@@ -15,6 +15,7 @@ import { corsOptions } from './3_infraestructure/config/cors.config.js';
 import UserRoutes from './4_presentation/Users/UserRoutes.js';
 import BudgetRoutes from './4_presentation/Budget/BudgetRoutes.js';
 import CategoryRoutes from './4_presentation/Category/CategoryRoutes.js';
+import ExpenseRoutes from './4_presentation/Expense/ExpenseRoutes.js'
 
 import ProfileRoutes from './4_presentation/Profiles/ProfilesRoutes.js'; 
 
@@ -35,6 +36,7 @@ app.use('/users', UserRoutes);
 app.use('/budgets', BudgetRoutes);
 app.use('/profiles', ProfileRoutes); 
 app.use('/categories', CategoryRoutes);
+app.use('/expenses', ExpenseRoutes);
 //  ¡ACTIVAMOS EL MÓDULO DE FAMILIAS!
 // Todas las rutas empezarán con /families
 app.use('/families', FamilyRoutes);
