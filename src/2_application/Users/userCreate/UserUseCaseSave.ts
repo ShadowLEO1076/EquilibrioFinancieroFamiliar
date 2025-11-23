@@ -17,7 +17,6 @@ export class UserUseCaseSave{
          input.email,
          input.username,  // MATE DEVERIAMOS HASHEAR LA CONTRASEÑA ANTES DE GUARDARLA
          input.password,  // ANTES DE HACER NEW USER AQUÍ
-        
          input.language,
          input.timezone,
         // input.preferences,

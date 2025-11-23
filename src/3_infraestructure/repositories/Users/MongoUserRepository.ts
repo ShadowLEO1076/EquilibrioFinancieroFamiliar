@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
     timezone: String,
    // preferences: userPreferenceSchema,
     isActive: Boolean,
-    familyId: String,
+    //familyId: String,
     createdAt: Date,
     updatedAt: Date
 });
@@ -81,9 +81,14 @@ export class MongoUserRepository implements IUserRepository{
 
       //halla un dato usando una de las variables del esquema
       //lean permite convertir el modelo en un objeto TS/Js
-        const userFound = await userModel.findById(id).lean();
+      try{
+        const userFound = await userModel.findOne({ _id: id }).lean().exec();
 
         return this.toDomain(userFound);
+      }
+      catch{
+        throw new Error("User not found.")
+      }
     }
 
     async update(user: User): Promise<User> {
