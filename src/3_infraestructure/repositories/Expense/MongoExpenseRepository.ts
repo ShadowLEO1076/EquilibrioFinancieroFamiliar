@@ -62,9 +62,14 @@ export class MongoExpenseRepository implements IExpenseRepository{
         //regresamos lo salvado
         return this.toDomain(saved);
     }
-    getAllByProfileIdUserId(profileId: string): Promise<Expense[]> {
-        throw new Error("Method not implemented.");
+
+    async getAllByProfileIdUserId(profileId: string): Promise<Expense[]> {
+        
+        let data = await expenseModel.find({profileId}).lean();
+
+        return data.map(doc => this.toDomain(doc));
     }
+
     update(input: Expense): Promise<Expense> {
         throw new Error("Method not implemented.");
     }

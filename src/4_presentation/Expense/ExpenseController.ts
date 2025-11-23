@@ -17,7 +17,22 @@ export class ExpenseController{
 
             let expense = await this.saveUseCase.execute(data, userId);
 
-            res.status(200).json(data);
+            res.status(200).json(expense);
+        }
+        catch(err: any){
+             res.status(500).json({ error: err.message });
+        }
+    }
+
+    GetAll = async(req: Request, res: Response) => {
+
+         try{
+            //data debe ser la entidad expense, se puede omitir createdAt, updatedAt
+            let {profileId} = req.body
+
+            let expenses = await this.getAllUseCase.execute(profileId)
+
+            res.status(200).json(expenses);
         }
         catch(err: any){
              res.status(500).json({ error: err.message });
