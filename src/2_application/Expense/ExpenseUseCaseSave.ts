@@ -46,6 +46,8 @@ export class ExpenseUseCaseSave{
             true
         )
 
-        return this.expenseRepo.save(newExpense);
+        let data = this.expenseRepo.save(newExpense);
+
+        return data;
     }
 }

@@ -14,17 +14,17 @@ const profileRepoInExpense = new MongoProfilesRepository();
 const categoryRepoInExpense = new MongoCategoryRepository();
 //instanciar servicios
 
-const expenseServiceGetAll = new ExpenseUseCaseGetAllByProfileIdUserId(expenseRepo, profileRepoInExpense, userRepoInExpense);
+const expenseServiceGetAll = new ExpenseUseCaseGetAllByProfileIdUserId(expenseRepo, profileRepoInExpense);
 const expenseServiceSave = new ExpenseUseCaseSave(expenseRepo, profileRepoInExpense, userRepoInExpense, categoryRepoInExpense)
 
 //controladores
 
 const expenseController = new ExpenseController(expenseServiceSave, expenseServiceGetAll);
-
 // crear router
 
 const expenseRouter = Router();
 
 expenseRouter.post('/', expenseController.Create);
+expenseRouter.get("/getAll", expenseController.GetAll);
 
 export default expenseRouter;
