@@ -9,11 +9,15 @@ import { UserUseCaseFindByEmail } from '../../2_application/Users/userUseCaseFin
 import { UserUseCaseLogin } from '../../2_application/Users/userLogin/UserUseCaseLogin.js';
 import { JwtAuthTokenService } from '../../2_application/JwtAuthTokenService/JwtAuthTokenService.js';
 import { authMiddleware } from '../../3_infraestructure/middleware/authMiddleware.js';
+
+
 import dotenv from 'dotenv';
+dotenv.config();
 
 //se instancia el repo
 const userRepo = new MongoUserRepository();
 const authToken = new JwtAuthTokenService(process.env.SECRET_JWT!);
+
 
 //se instancian los servicios
 const userSave = new UserUseCaseSave(userRepo);
@@ -25,17 +29,17 @@ const userLogin = new UserUseCaseLogin(userRepo, authToken);
 
 //Se instancia el controlador, crece con cada nuevo servicio.
 const controller = new UserController
-                (userSave,
-                 userFindId, 
-                 userUpdateCont, 
-                 userDeleteCont,
-                 userFindEmail,
-                userLogin);
+    (userSave,
+        userFindId,
+        userUpdateCont,
+        userDeleteCont,
+        userFindEmail,
+        userLogin);
 //se crea el router
 const router = Router();
 //Se define el tipo de solicitud http, su url, y qué controlador usa
 router.post('/login', controller.Login);
-router.post('/save', controller.Create);
+router.post('/register', controller.Create);
 router.post('/email', controller.FindByEmail);
 router.get('/:id', authMiddleware, controller.FindById);
 router.put('/update/:id', controller.Update);
