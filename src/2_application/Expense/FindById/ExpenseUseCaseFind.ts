@@ -1,8 +1,8 @@
 // src/2_application/Expense/ExpenseUseCaseFind.ts
-import { Expense } from "../../1_domain/Expense/Expense.js";
-import type { IExpenseRepository } from "../../1_domain/Expense/IExpenseRepository.js";
+import { Expense } from "../../../1_domain/Expense/Expense.js";
+import type { IExpenseRepository } from "../../../1_domain/Expense/IExpenseRepository.js";
 
-export class ExpenseUseCaseGetAllByProfileIdUserId { // Puedes mantener este nombre de clase largo si quieres
+export class ExpenseUseCaseGetAllByProfileIdUserId {
 
     constructor(private readonly expenseRepo: IExpenseRepository) { }
 

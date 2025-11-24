@@ -32,7 +32,7 @@ export class CategoryController {
 
     GetAll = async (req: Request, res: Response) => {
         try {
-            // ⚠️ CORRECCIÓN: GET usa params, no body.
+            // le quite el body y le agregue params porque no me funciono en el frontend
             // Ruta esperada: GET /categories/:profileId
             const { profileId } = req.params;
 

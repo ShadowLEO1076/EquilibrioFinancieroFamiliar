@@ -3,7 +3,7 @@ export class Category {
     public id: string,
     public name: string,
     public description: string,
-    public icon: string, // 🆕 Vital para tu UI (ej: "🍔")
+    public icon: string, // util para mi frontend
     public type: 'income' | 'expense' | 'both' = 'expense',
     public isActive: boolean = true,
     public profileId?: string, // Si es null/undefined = Categoría Global del Sistema
@@ -11,7 +11,7 @@ export class Category {
     public updatedAt: Date = new Date(),
   ) {
     this.validateName(name);
-    // La descripción puede ser opcional, así que quitamos la validación estricta si quieres
+
   }
 
   private validateName(name: string) {

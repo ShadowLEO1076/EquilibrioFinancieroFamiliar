@@ -1,34 +1,50 @@
+// src/4_presentation/Expense/ExpenseRouter.ts
 import { Router } from "express";
-// Asegúrate de importar los nombres correctos de tus casos de uso (Create vs Save)
-import { ExpenseUseCaseGetAllByProfileIdUserId } from "../../2_application/Expense/getAll/ExpenseUseCaseGetAllByProfleIdUserId.js";
-import { ExpenseUseCaseCreate } from "../../2_application/Expense/create/ExpenseUseCaseCreate.js"; // Usamos Create para la lógica de presupuesto
-import { MongoExpenseRepository } from "../../3_infraestructure/repositories/Expense/MongoExpenseRepository.js";
-import { MongoBudgetRepository } from "../../3_infraestructure/repositories/Budget/MongoBudgetRepository.js";
-
-import { ExpenseController } from "./ExpenseController.js";
-
-// Repositorios
-const expenseRepo = new MongoExpenseRepository();
-const budgetRepo = new MongoBudgetRepository(); // me deja la barra de progreso
-
-// Instanciar Servicios
-const expenseServiceGetAll = new ExpenseUseCaseGetAllByProfileIdUserId(expenseRepo);
-
-
-// Solo inyectamos lo que el Caso de Uso REALMENTE usa. 
-// User, Profile y Category se validan por ID, no necesitan el repo entero aquí.
-// Pero Budget SÍ se necesita para la lógica de negocio.
-const expenseServiceSave = new ExpenseUseCaseCreate(expenseRepo, budgetRepo);
 
 // Controladores
-const expenseController = new ExpenseController(expenseServiceSave, expenseServiceGetAll);
+import { ExpenseController } from "./ExpenseController.js";
 
-// Router
+// Casos de Uso
+// Asegúrate de que la ruta del archivo 'getAll' esté escrita correctamente (Profle vs Profile) según tu carpeta real
+import { ExpenseUseCaseGetAllByProfileIdUserId } from "../../2_application/Expense/getAll/ExpenseUseCaseGetAllByProfleIdUserId.js";
+import { ExpenseUseCaseCreate } from "../../2_application/Expense/create/ExpenseUseCaseCreate.js";
+
+// Repositorios de Infraestructura
+import { MongoExpenseRepository } from "../../3_infraestructure/repositories/Expense/MongoExpenseRepository.js";
+import { MongoBudgetRepository } from "../../3_infraestructure/repositories/Budget/MongoBudgetRepository.js";
+import { MongoCategoryRepository } from "../../3_infraestructure/repositories/Category/MongoCategoryRepository.js"; // 🆕 Validacion de seguridad
+
+// --- 1. INSTANCIAR REPOSITORIOS (La Capa de Datos) ---
+const expenseRepo = new MongoExpenseRepository();
+const budgetRepo = new MongoBudgetRepository(); // Necesario para lógica de negocio (restar dinero)
+const categoryRepo = new MongoCategoryRepository(); // Necesario para validación Mate perdona ya le pongo de nuevo  
+
+// --- 2. INSTANCIAR CASOS DE USO (La Lógica) ---
+
+// Para crear gasto: Necesita los 3 repositorios para validar, guardar y actualizar presupuesto
+const expenseServiceSave = new ExpenseUseCaseCreate(
+    expenseRepo,
+    budgetRepo,
+    categoryRepo
+);
+
+// Para leer gastos: Solo necesita el repo de gastos (optimizamos quitando profileRepo)
+const expenseServiceGetAll = new ExpenseUseCaseGetAllByProfileIdUserId(expenseRepo);
+
+// --- 3. INSTANCIAR CONTROLADOR (El Recepcionista) ---
+const expenseController = new ExpenseController(
+    expenseServiceSave,
+    expenseServiceGetAll
+);
+
+// --- 4. DEFINIR RUTAS (El Mapa) ---
 const expenseRouter = Router();
 
+// POST /expenses/ -> Crea el gasto
 expenseRouter.post('/', expenseController.Create);
 
-//  Parametro en la URL no me acostumbre con el body me perdi ahi perdon mate 
+// GET /expenses/:profileId -> Trae los gastos de un perfil
+// Nota: Usamos :profileId para que Express capture el parámetro de la URL
 expenseRouter.get("/:profileId", expenseController.GetAll);
 
 export default expenseRouter;

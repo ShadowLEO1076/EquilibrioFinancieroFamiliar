@@ -1,5 +1,5 @@
-import type { IExpenseRepository } from "../../1_domain/Expense/IExpenseRepository.js";
-import type { IBudgetRepository } from "../../1_domain/Budget/IBudgetRepository.js";
+import type { IExpenseRepository } from "../../../1_domain/Expense/IExpenseRepository.js";
+import type { IBudgetRepository } from "../../../1_domain/Budget/IBudgetRepository.js";
 
 export class ExpenseUseCaseDelete {
 
