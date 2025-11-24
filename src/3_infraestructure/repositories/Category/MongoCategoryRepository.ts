@@ -1,63 +1,68 @@
-import mongoose, { Schema }  from "mongoose";
+import mongoose from "mongoose";
 import { ICategoryRepository } from "../../../1_domain/Category/ICategoryRepository.js";
 import { Category } from "../../../1_domain/Category/Category.js";
-import { ProfileModel } from "../Profiles/MongoProfilesRepository.js";
 
 const CategorySchema = new mongoose.Schema({
-     id: {type: String},
-     name: { type: String, required: true },
-     description: { type: String, required: true },
-     isActive: { type: Boolean, default: true },
-     profileId: { type: String, ref: 'Profile', default: null  },  // Si es null, es categoría oficial
-     type: { type: String, enum: ['income', 'expense', 'both'], default: null },
-     createdAt: Date,
-     updatedAt: Date
+    // id: {type: String}, // Mongoose crea _id solo, no hace falta duplicarlo aqui
+    name: { type: String, required: true },
+    description: { type: String, required: false }, // A veces es opcional
+    icon: { type: String, required: true },
+    isActive: { type: Boolean, default: true },
+    profileId: { type: String, default: null },
+    type: { type: String, enum: ['income', 'expense', 'both'], default: 'expense' },
 }, { timestamps: true });
 
 export const CategoryModel = mongoose.model("Category", CategorySchema, "Categories");
 
+export class MongoCategoryRepository implements ICategoryRepository {
 
-export class MongoCategoryRepository implements ICategoryRepository{
 
-     async getAllwithProfileEspecific(profileId: string): Promise<Category[]> {
-           // Buscar todas las categorías oficiales y las del usuario
+    async findAllAvailableForProfile(profileId: string): Promise<Category[]> {
         const docs = await CategoryModel.find({
             $or: [
-                { profileId: null },        // oficiales
-                { profileId: profileId }    // del usuario
+                { profileId: null },          // Oficiales
+                { profileId: { $exists: false } },
+                { profileId: profileId }      // Del usuario
             ]
-        }).exec();
+        }).lean().exec();
 
-        // Convertir documentos de Mongoose a la clase de dominio Category
-        return docs.map(doc => new Category(
-            doc._id.toString(),
-            doc.name,
-            doc.description,
-            doc.isActive,
-            doc.profileId ? doc.profileId : undefined, // si hay profile
-            doc.type ?? undefined,
-            doc.createdAt,
-            doc.updatedAt
-        ));
-     }
+        return docs.map(doc => this.toDomain(doc));
+    }
 
-     async save(input: Category): Promise<Category> {
-
-         const doc = await CategoryModel.create({
+    async save(input: Category): Promise<Category> {
+        // Usamos create, que guarda y devuelve el documento
+        const doc = await CategoryModel.create({
+            _id: input.id, // Forzamos el UUID que generaste en el Caso de Uso
             name: input.name,
             description: input.description,
+            icon: input.icon,
             isActive: input.isActive,
-            profileId: input.profileId,
-            type: input.type ?? null
+            profileId: input.profileId ?? null,
+            type: input.type
         });
 
+        return this.toDomain(doc);
+    }
+
+    async findById(id: string): Promise<Category | null> {
+        const doc = await CategoryModel.findById(id).lean().exec();
+        return doc ? this.toDomain(doc) : null;
+    }
+
+    async delete(id: string): Promise<void> {
+        await CategoryModel.findByIdAndDelete(id).exec();
+    }
+
+    // Helper privado para no repetir código
+    private toDomain(doc: any): Category {
         return new Category(
             doc._id.toString(),
             doc.name,
             doc.description,
+            doc.icon,
+            doc.type,
             doc.isActive,
-            doc.profileId ? doc.profileId.toString() : undefined,
-            doc.type ?? undefined,
+            doc.profileId,
             doc.createdAt,
             doc.updatedAt
         );

@@ -1,8 +1,14 @@
+// src/1_domain/Expense/IExpenseRepository.ts
 import { Expense } from "./Expense.js";
 
-export interface IExpenseRepository{
+export interface IExpenseRepository {
+    save(expense: Expense): Promise<Expense>;
 
-    save(input: Expense): Promise<Expense>;
-    getAllByProfileIdUserId(profileId: string): Promise<Expense[]>; //ver si esto funciona o moverlo a application
-    update(input: Expense): Promise<Expense>; //asegurar que solo ciertos datos puedan actualizarse, NO LA ID NI EL USUARIO
+    //ESTA ES LA LÍNEA QUE TE FALTA O TIENE OTRO NOMBRE
+    // Puedes llamarla getAllByProfileIdUserId si quieres, pero findAllByProfileId es más limpio.
+    findAllByProfileId(profileId: string): Promise<Expense[]>;
+
+    update(expense: Expense): Promise<Expense>;
+    delete(id: string): Promise<void>;
+    findById(id: string): Promise<Expense | null>;
 }

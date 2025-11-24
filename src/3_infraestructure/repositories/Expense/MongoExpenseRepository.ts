@@ -1,88 +1,90 @@
 import mongoose from "mongoose";
 import { Expense, PaymentMethod } from "../../../1_domain/Expense/Expense.js";
-import { ProfileModel } from "../Profiles/MongoProfilesRepository.js";
 import { IExpenseRepository } from "../../../1_domain/Expense/IExpenseRepository.js";
 
 const ExpenseSchema = new mongoose.Schema({
+    _id: { type: String }, // Para aceptar tus UUIDs manuales
+    amount: { type: Number, required: true },
+    description: { type: String, required: true },
 
-    amount: {
-        type: Number,
-        required: true,
-        min: [0.01, "Expense amount must be greater than zero"]
-    },
+    // CAMBIO IMPORTANTE: String en lugar de ObjectId para evitar errores con UUIDs
+    categoryId: { type: String, ref: "Category", required: true },
 
-    description: {
-        type: String,
-        required: true,
-        trim: true
-    },
+    date: { type: Date, required: true },
+    paymentMethod: { type: String, required: true },
 
-    categoryId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Category",
-        required: true
-    },
+    profileId: { type: String, required: true },
+    userId: { type: String, required: true },
 
-    date: {
-        type: Date,
-        required: true
-    },
-
-    paymentMethod: {
-        type: String,
-        enum: Object.values(PaymentMethod),
-        required: true
-    },
-
-    profileId: {
-        type: String,   // id es un string, no un ObjectId de Mongo
-        ref: "Profile",
-        required: true
-    },
-
-    isActive: {
-        type: Boolean,
-        default: true
-    }
-
-}, { 
-    timestamps: true
-});
+    isActive: { type: Boolean, default: true }
+}, { timestamps: true });
 
 export const expenseModel = mongoose.model("Expense", ExpenseSchema, "Expenses");
 
-export class MongoExpenseRepository implements IExpenseRepository{
+export class MongoExpenseRepository implements IExpenseRepository {
 
     async save(input: Expense): Promise<Expense> {
-        
-        //crear model usando el dato
-        let newExpense = new expenseModel(input);
-        //salvamos el modelo
-        let saved = newExpense.save();
-        //regresamos lo salvado
+        // Creamos la instancia
+        const newExpense = new expenseModel({
+            _id: input.id, // Guardamos tu UUID
+            amount: input.amount,
+            description: input.description,
+            categoryId: input.categoryId,
+            date: input.date,
+            paymentMethod: input.paymentMethod,
+            profileId: input.profileId,
+            userId: input.userId, // 🆕
+            isActive: input.isActive
+        });
+
+
+        const saved = await newExpense.save();
+
         return this.toDomain(saved);
     }
 
-    async getAllByProfileIdUserId(profileId: string): Promise<Expense[]> {
-        
-        let data = await expenseModel.find({profileId}).lean();
-
+    async findAllByProfileId(profileId: string): Promise<Expense[]> {
+        const data = await expenseModel.find({ profileId }).lean().exec();
         return data.map(doc => this.toDomain(doc));
     }
 
-    update(input: Expense): Promise<Expense> {
-        throw new Error("Method not implemented.");
+    // Implementación necesaria para el update del budget
+    async findById(id: string): Promise<Expense | null> {
+        const doc = await expenseModel.findById(id).lean().exec();
+        return doc ? this.toDomain(doc) : null;
     }
 
-    private toDomain(doc: any): Expense{
+    async delete(id: string): Promise<void> {
+        await expenseModel.deleteOne({ _id: id }).exec();
+    }
+
+    async update(input: Expense): Promise<Expense> {
+        const updated = await expenseModel.findByIdAndUpdate(
+            input.id,
+            {
+                amount: input.amount,
+                description: input.description,
+                categoryId: input.categoryId,
+                date: input.date,
+                // ... otros campos actualizables
+            },
+            { new: true } // Devuelve el nuevo documento
+        ).lean().exec();
+
+        if (!updated) throw new Error("Expense not found to update");
+        return this.toDomain(updated);
+    }
+
+    private toDomain(doc: any): Expense {
         return new Expense(
-            doc.id,
+            doc._id.toString(),
             doc.amount,
             doc.description,
-            doc.categoryId, //solo queremos la id, pero toca ver si esto daña mi populate
+            doc.categoryId.toString(), // Aseguramos string
             doc.date,
-            doc.paymentMethod,
+            doc.paymentMethod as PaymentMethod,
             doc.profileId,
+            doc.userId, // se le agrega porque es un campo nuevo
             doc.isActive,
             doc.createdAt,
             doc.updatedAt

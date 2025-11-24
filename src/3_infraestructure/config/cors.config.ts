@@ -14,6 +14,7 @@ const allowedOrigins = [
   process.env.CORS_ORIGIN_DEV_1, // -> http://localhost:3000
   process.env.CORS_ORIGIN_DEV_2, // -> http://192.168.100.22:3000
   process.env.CORS_ORIGIN_DEV_3, // -> http://192.168.56.1:3000
+  process.env.CORS_ORIGIN_DEV_4, // ->  https://jolyn-uninterpretable-superperfectly.ngrok-free.dev 
   process.env.CORS_ORIGIN_PROD   // -> http://192.168.100.22:3000/test-api
 ];
 

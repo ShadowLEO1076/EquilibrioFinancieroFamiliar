@@ -1,7 +1,15 @@
-import { Category } from "./Category.js"
+import { Category } from "./Category.js";
 
-export interface ICategoryRepository{
+export interface ICategoryRepository {
+    // Guardar (Crear o Editar)
+    save(category: Category): Promise<Category>;
 
-    getAllwithProfileEspecific(profileId: string): Promise<Category[]>; //traer todas las categorías oficiales y las creadas por el perfil
-    save(input: Category): Promise<Category>; //guardar... Solo eso
+    // Traer categorías del sistema (Globales) + las de mi perfil
+    findAllAvailableForProfile(profileId: string): Promise<Category[]>;
+
+    // Buscar por ID (necesario para validar antes de usarla)
+    findById(id: string): Promise<Category | null>;
+
+    // Borrar
+    delete(id: string): Promise<void>;
 }

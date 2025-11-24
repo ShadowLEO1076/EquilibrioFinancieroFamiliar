@@ -1,28 +1,28 @@
-// domain/entities/Category.ts
-
-//Entidad Category para asegurar consistencia de datos
 export class Category {
   constructor(
-    public id: string, //id de UUID4 o mongodb stringificada.
+    public id: string,
     public name: string,
     public description: string,
+    public icon: string, // 🆕 Vital para tu UI (ej: "🍔")
+    public type: 'income' | 'expense' | 'both' = 'expense',
     public isActive: boolean = true,
-    public profileId?: string, //no todos serán creados por un usuario. Si es null o vacio, sabemos que es nuestro
-    public type?: 'income' | 'expense' | 'both',
+    public profileId?: string, // Si es null/undefined = Categoría Global del Sistema
     public createdAt: Date = new Date(),
     public updatedAt: Date = new Date(),
-  ){
+  ) {
     this.validateName(name);
-    this.validateDescription(description);
+    // La descripción puede ser opcional, así que quitamos la validación estricta si quieres
   }
 
   private validateName(name: string) {
-    const regexName = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?:\s[A-Za-zÁÉÍÓÚáéíóúÑñ]+)*$/;
-    if(!regexName.test(name)) throw new Error("Name not allowed, please use only letters.");
-  }
+    // Regex mejorada: Permite letras, números y espacios (Ej: "Casa 2")
+    const regexName = /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s\-\&]+$/;
 
-  private validateDescription(description: string) {
-    const regexDescription = /<script>|<\/script>/i;
-    if(regexDescription.test(description)) throw new Error("Description not allowed, please try again.");
+    if (!regexName.test(name)) {
+      throw new Error("El nombre contiene caracteres inválidos.");
+    }
+    if (name.length < 3) {
+      throw new Error("El nombre es muy corto.");
+    }
   }
 }
