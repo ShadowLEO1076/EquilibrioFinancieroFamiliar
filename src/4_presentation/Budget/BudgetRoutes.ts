@@ -1,37 +1,30 @@
-// src/4_presentation/routes/BudgetRoutes.ts
 import { Router } from 'express';
 import { MongoBudgetRepository } from '../../3_infraestructure/repositories/Budget/MongoBudgetRepository.js';
-import { BudgetUseCaseCreate } from '../../2_application/Budget/budgetCreate/BudgetUseCaseCreate.js';   
-import { BudgetUseCaseFindAllByProfile, BudgetUseCaseFindById } from '../../2_application/Budget/budgetFindById/BudgetUseCaseFind.js'; 
-import { BudgetUseCaseUpdate } from '../../2_application/Budget/budgetUpdate/BudgetUseCaseUpdate.js';
-import { BudgetUseCaseDelete } from  '../../2_application/Budget/budgetdelete/BudgetUseCaseDelete.js';
-import { BudgetController } from '../Budget/BudgetController.js';   
 
-// Inyección
+// Importamos el NUEVO Caso de Uso de Lote
+import { BudgetUseCaseSaveBatch } from '../../2_application/Budget/budgetSaveBatch/BudgetUseCaseSaveBatch.js';
+// Importamos el de búsqueda (asegúrate de que la ruta sea correcta en tu proyecto)
+import { BudgetUseCaseFindAllByProfile } from '../../2_application/Budget/budgetFindById/BudgetUseCaseFind.js';
+
+import { BudgetController } from '../Budget/BudgetController.js';
+
+// 1. Instancias
 const repo = new MongoBudgetRepository();
-const createUC = new BudgetUseCaseCreate(repo);
-const findAllUC = new BudgetUseCaseFindAllByProfile(repo);
-const findByIdUC = new BudgetUseCaseFindById(repo);
-const updateUC = new BudgetUseCaseUpdate(repo);
-const deleteUC = new BudgetUseCaseDelete(repo);
 
-const controller = new BudgetController(createUC, findAllUC, findByIdUC, updateUC, deleteUC);
+// Usamos el de Lote (Batch) para crear/actualizar
+const saveBatchUC = new BudgetUseCaseSaveBatch(repo);
+const findAllUC = new BudgetUseCaseFindAllByProfile(repo);
+
+// 2. Controlador
+const controller = new BudgetController(saveBatchUC, findAllUC);
 
 const router = Router();
 
-// POST /budgets/
-router.post('/', controller.create);
+// POST /budgets/ -> Usa la lógica de Lote (Batch)
+router.post('/', controller.createBatch);
 
-// GET /budgets/profile/:profileId (Dashboard)
-router.get('/profile/:profileId', controller.getAllByProfile);
-
-// GET /budgets/:id (Detalle)
-router.get('/:id', controller.getById);
-
-// PUT /budgets/:id (Actualizar)
-router.put('/:id', controller.update);
-
-// DELETE /budgets/:id
-router.delete('/:id', controller.delete);
+// GET /budgets/:profileId -> Trae los presupuestos (ojo, quité /profile para hacerlo más REST, ajusta tu frontend si es necesario)
+// Si tu frontend llama a /budgets/profile/:id, deja la ruta como la tenías abajo:
+router.get('/:profileId', controller.getAllByProfile);
 
 export default router;
