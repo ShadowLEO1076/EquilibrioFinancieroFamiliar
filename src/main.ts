@@ -16,7 +16,7 @@ import UserRoutes from './4_presentation/Users/UserRoutes.js';
 import BudgetRoutes from './4_presentation/Budget/BudgetRoutes.js';
 import CategoryRoutes from './4_presentation/Category/CategoryRoutes.js';
 import ExpenseRoutes from './4_presentation/Expense/ExpenseRoutes.js'
-
+import incomeRouter from './4_presentation/Income/IncomeRoutes.js';
 import ProfileRoutes from './4_presentation/Profiles/ProfilesRoutes.js'; 
 
 //  IMPORTAMOS LAS RUTAS DE FAMILIA (Asegúrate que esta ruta sea correcta)
@@ -37,6 +37,7 @@ app.use('/budgets', BudgetRoutes);
 app.use('/profiles', ProfileRoutes); 
 app.use('/categories', CategoryRoutes);
 app.use('/expenses', ExpenseRoutes);
+app.use('/incomes',incomeRouter )
 //  ¡ACTIVAMOS EL MÓDULO DE FAMILIAS!
 // Todas las rutas empezarán con /families
 app.use('/families', FamilyRoutes);
