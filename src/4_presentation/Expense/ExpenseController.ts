@@ -13,7 +13,8 @@ export class ExpenseController{
 
         try{
             //data debe ser la entidad expense, se puede omitir createdAt, updatedAt
-            let {userId, data} = req.body
+            let {data} = req.body
+            let userId = (req as any).user.userId;
 
             let expense = await this.saveUseCase.execute(data, userId);
 

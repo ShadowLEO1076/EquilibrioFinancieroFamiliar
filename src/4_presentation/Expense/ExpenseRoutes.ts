@@ -6,8 +6,12 @@ import { MongoProfilesRepository } from "../../3_infraestructure/repositories/Pr
 import { MongoUserRepository } from "../../3_infraestructure/repositories/Users/MongoUserRepository.js";
 import { ExpenseController } from "./ExpenseController.js";
 import { MongoCategoryRepository } from "../../3_infraestructure/repositories/Category/MongoCategoryRepository.js";
+import { JwtAuthTokenService } from "../../2_application/JwtAuthTokenService/JwtAuthTokenService.js";
+import { authMiddleware } from '../../3_infraestructure/middleware/authMiddleware.js';
 
 //Repositorios
+const authToken = new JwtAuthTokenService(process.env.SECRET_JWT!);
+
 const expenseRepo = new MongoExpenseRepository();
 const userRepoInExpense = new MongoUserRepository();
 const profileRepoInExpense = new MongoProfilesRepository();
@@ -24,7 +28,7 @@ const expenseController = new ExpenseController(expenseServiceSave, expenseServi
 
 const expenseRouter = Router();
 
-expenseRouter.post('/', expenseController.Create);
+expenseRouter.post('/', authMiddleware, expenseController.Create);
 expenseRouter.get("/getAll", expenseController.GetAll);
 
 export default expenseRouter;

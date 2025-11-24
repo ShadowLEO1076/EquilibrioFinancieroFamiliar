@@ -1,4 +1,3 @@
-import { Category } from "../Category/Category.js";
 
 export enum PaymentMethod{
     CASH = 'cash',
