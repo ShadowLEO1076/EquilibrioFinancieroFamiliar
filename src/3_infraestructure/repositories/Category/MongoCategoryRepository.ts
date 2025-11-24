@@ -3,6 +3,7 @@ import { ICategoryRepository } from "../../../1_domain/Category/ICategoryReposit
 import { Category } from "../../../1_domain/Category/Category.js";
 
 const CategorySchema = new mongoose.Schema({
+    _id: { type: String }, // ¡Obligatorio para que acepte tus UUIDs!
     // id: {type: String}, // Mongoose crea _id solo, no hace falta duplicarlo aqui
     name: { type: String, required: true },
     description: { type: String, required: false }, // A veces es opcional
