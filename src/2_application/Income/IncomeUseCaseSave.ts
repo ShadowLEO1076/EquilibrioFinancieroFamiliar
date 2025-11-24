@@ -1,18 +1,19 @@
+import { Console } from "console";
 import { ICategoryRepository } from "../../1_domain/Category/ICategoryRepository.js";
-import { Expense } from "../../1_domain/Expense/Expense.js";
-import { IExpenseRepository } from "../../1_domain/Expense/IExpenseRepository.js";
+import { IIncomeRepository } from "../../1_domain/Income/IIncomeRepository.js";
+import { Income } from "../../1_domain/Income/Income.js";
 import { IProfileRepository } from "../../1_domain/Profile/IProfileRepository.js";
 import { IUserRepository } from "../../1_domain/Users/IUserRepository.js";
 
-export class ExpenseUseCaseSave{
+export class IncomeUseCaseSave{
 
-    constructor(private readonly expenseRepo: IExpenseRepository,
+    constructor(private readonly incomeRepo: IIncomeRepository,
         private readonly profileRepo:IProfileRepository,
         private readonly userRepo: IUserRepository,
         private readonly categoryRepo: ICategoryRepository
     ){}
 
-    async execute(input: Omit<Expense, 'createdAt' | 'updatedAt'>, userId: string){
+    async execute(input: Omit<Income, 'createdAt' | 'updatedAt'>, userId: string){
         //asegurar que existe el perfil
         let profile = await this.profileRepo.findById(input.profileId);
 
@@ -27,26 +28,26 @@ export class ExpenseUseCaseSave{
             throw new Error("Profile not related to user logged in.")
         }
 
-        let categories = await this.categoryRepo.getAllwithProfileEspecific(input.id);
+        let categories = await this.categoryRepo.getAllwithProfileEspecific(profile.id);
 
         let catExist = categories.some( cat => cat.id === input.categoryId);
-
+            
         if (!catExist) {
              throw new Error("Category does not belong to this profile.");
         }
 
-        let newExpense = new Expense(
+        let newExpense = new Income(
             input.id,
             input.amount,
             input.description,
             input.categoryId,
             input.date,
-            input.paymentMethod,
+            input.incomeSource,
             input.profileId,
             true
         )
 
-        let data = this.expenseRepo.save(newExpense);
+        let data = this.incomeRepo.save(newExpense);
 
         return data;
     }
