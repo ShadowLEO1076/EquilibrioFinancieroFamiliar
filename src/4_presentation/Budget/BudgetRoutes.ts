@@ -8,6 +8,9 @@ import { BudgetUseCaseFindAllByProfile } from '../../2_application/Budget/budget
 
 import { BudgetController } from '../Budget/BudgetController.js';
 
+// 🆕 MIDDLEWARE DE AUTENTICACIÓN
+import { authMiddleware } from '../../3_infraestructure/middleware/authMiddleware.js';
+
 // 1. Instancias
 const repo = new MongoBudgetRepository();
 
@@ -20,11 +23,11 @@ const controller = new BudgetController(saveBatchUC, findAllUC);
 
 const router = Router();
 
-// POST /budgets/ -> Usa la lógica de Lote (Batch)
-router.post('/', controller.createBatch);
+// POST /budgets/ -> Usa la lógica de Lote (Batch) (🔒 Protegido con authMiddleware)
+router.post('/', authMiddleware, controller.createBatch);
 
 // GET /budgets/:profileId -> Trae los presupuestos (ojo, quité /profile para hacerlo más REST, ajusta tu frontend si es necesario)
-// Si tu frontend llama a /budgets/profile/:id, deja la ruta como la tenías abajo:
-router.get('/:profileId', controller.getAllByProfile);
+// Si tu frontend llama a /budgets/profile/:id, deja la ruta como la tenías abajo: (🔒 Protegido con authMiddleware)
+router.get('/:profileId', authMiddleware, controller.getAllByProfile);
 
 export default router;

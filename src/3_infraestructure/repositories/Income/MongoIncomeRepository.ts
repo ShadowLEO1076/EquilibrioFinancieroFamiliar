@@ -18,7 +18,7 @@ const IncomeSchema = new mongoose.Schema({
     },
 
     categoryId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "Category",
         required: true
     },

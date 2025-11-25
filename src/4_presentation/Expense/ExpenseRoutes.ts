@@ -14,6 +14,9 @@ import { MongoExpenseRepository } from "../../3_infraestructure/repositories/Exp
 import { MongoBudgetRepository } from "../../3_infraestructure/repositories/Budget/MongoBudgetRepository.js";
 import { MongoCategoryRepository } from "../../3_infraestructure/repositories/Category/MongoCategoryRepository.js"; // 🆕 Validacion de seguridad
 
+// 🆕 MIDDLEWARE DE AUTENTICACIÓN
+import { authMiddleware } from "../../3_infraestructure/middleware/authMiddleware.js";
+
 // --- 1. INSTANCIAR REPOSITORIOS (La Capa de Datos) ---
 const expenseRepo = new MongoExpenseRepository();
 const budgetRepo = new MongoBudgetRepository(); // Necesario para lógica de negocio (restar dinero)
@@ -40,11 +43,11 @@ const expenseController = new ExpenseController(
 // --- 4. DEFINIR RUTAS (El Mapa) ---
 const expenseRouter = Router();
 
-// POST /expenses/ -> Crea el gasto
-expenseRouter.post('/', expenseController.Create);
+// POST /expenses/ -> Crea el gasto (🔒 Protegido con authMiddleware)
+expenseRouter.post('/', authMiddleware, expenseController.Create);
 
-// GET /expenses/:profileId -> Trae los gastos de un perfil
+// GET /expenses/:profileId -> Trae los gastos de un perfil (🔒 Protegido con authMiddleware)
 // Nota: Usamos :profileId para que Express capture el parámetro de la URL
-expenseRouter.get("/:profileId", expenseController.GetAll);
+expenseRouter.get("/:profileId", authMiddleware, expenseController.GetAll);
 
 export default expenseRouter;

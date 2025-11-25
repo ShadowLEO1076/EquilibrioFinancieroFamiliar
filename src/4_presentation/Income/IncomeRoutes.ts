@@ -6,6 +6,9 @@ import { IncomeUseCaseSave } from "../../2_application/Income/IncomeUseCaseSave.
 import { IncomeUseCaseGetAllByProfileIdUserId } from "../../2_application/Income/IncomeUseCaseGetAllByProfileIdUserId.js"; // Verifica ruta
 import { IncomeController } from "./IncomeController.js";
 
+// 🆕 MIDDLEWARE DE AUTENTICACIÓN
+import { authMiddleware } from "../../3_infraestructure/middleware/authMiddleware.js";
+
 // --- 1. REPOSITORIOS ---
 const incomeRepo = new MongoIncomeRepository();
 const categoryRepo = new MongoCategoryRepository(); // Necesario para validar seguridad
@@ -30,10 +33,10 @@ const incomeController = new IncomeController(incomeServiceSave, incomeServiceGe
 // --- 4. RUTAS ---
 const incomeRouter = Router();
 
-// POST /incomes/
-incomeRouter.post('/', incomeController.Create);
+// POST /incomes/ (🔒 Protegido con authMiddleware)
+incomeRouter.post('/', authMiddleware, incomeController.Create);
 
-// GET /incomes/:profileId (Parametro en URL)
-incomeRouter.get("/:profileId", incomeController.GetAll);
+// GET /incomes/:profileId (Parametro en URL) (🔒 Protegido con authMiddleware)
+incomeRouter.get("/:profileId", authMiddleware, incomeController.GetAll);
 
 export default incomeRouter;
