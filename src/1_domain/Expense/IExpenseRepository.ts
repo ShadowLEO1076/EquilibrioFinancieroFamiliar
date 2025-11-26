@@ -11,4 +11,5 @@ export interface IExpenseRepository {
     update(expense: Expense): Promise<Expense>;
     delete(id: string): Promise<void>;
     findById(id: string): Promise<Expense | null>;
+    sumCurrentMonthExpenses(profileId: string): Promise<number>;
 }

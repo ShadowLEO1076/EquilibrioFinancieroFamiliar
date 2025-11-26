@@ -16,12 +16,12 @@ export interface JoinFamilyInput {
 }
 
 export class FamilyMembershipUseCaseCreate {
-    
+
     constructor(
         private readonly membershipRepo: IFamilyMembershipRepository,
         private readonly familyRepo: IFamilyRepository,
-        private readonly profileRepo: IProfileRepository 
-    ){}
+        private readonly profileRepo: IProfileRepository
+    ) { }
 
     async execute(input: JoinFamilyInput): Promise<FamilyMembership> {
 
@@ -39,7 +39,7 @@ export class FamilyMembershipUseCaseCreate {
 
         // 3. Validar que el Perfil NO esté ya en la Familia (Duplicidad)
         const existingMembership = await this.membershipRepo.findByProfileAndFamilyId(
-            input.profileId, 
+            input.profileId,
             familyToJoin.id
         );
         if (existingMembership) {
@@ -48,12 +48,12 @@ export class FamilyMembershipUseCaseCreate {
 
         // 4. Generar ID y Crear la Entidad de Membresía (Role MEMBER)
         const newMembershipId = uuidv4();
-        
+
         let newMembership = new FamilyMembership(
             newMembershipId,
             input.profileId,
             familyToJoin.id,
-            'MEMBER' as FamilyRole // El rol por defecto al unirse por invitación
+            FamilyRole.MEMBER // El rol por defecto al unirse por invitación
         );
 
         // 5. Guardar la nueva Membresía

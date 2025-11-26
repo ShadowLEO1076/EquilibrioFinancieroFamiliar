@@ -1,12 +1,8 @@
-// src/3_infraestructure/repositories/Families/MongoFamilyMembershipRepository.ts
-
 import mongoose, { Schema, Document } from 'mongoose';
-import { FamilyMembership, FamilyRole } from '../../../1_domain/Families/FamilyMembership.js';
-import type { IFamilyMembershipRepository } from '../../../1_domain/Families/IFamilyMembershipRepository.js';
+import { FamilyMembership } from '../../../1_domain/Families/FamilyMembership.js';
+import { IFamilyMembershipRepository } from '../../../1_domain/Families/IFamilyMembershipRepository.js';
 
-
-// ESQUEMA Y MODELO (Mongoose)
-
+// --- 1. DEFINICIÓN DE MONGOOSE (Schema) ---
 
 interface FamilyMembershipDocument extends Document {
     _id: string;
@@ -19,9 +15,9 @@ interface FamilyMembershipDocument extends Document {
 
 const FamilyMembershipSchema = new Schema({
     _id: { type: String, required: true },
-    profileId: { type: String, required: true, index: true }, // Indexado: "Mis Familias"
-    familyId: { type: String, required: true, index: true },  // Indexado: "Miembros de esta Familia"
-    role: { type: String, enum: ['ADMIN', 'MEMBER'], default: 'MEMBER' },
+    profileId: { type: String, required: true, index: true }, // Indexado para búsquedas rápidas
+    familyId: { type: String, required: true, index: true },  // Indexado para búsquedas rápidas
+    role: { type: String, enum: ['admin', 'member'], default: 'member' },
     isActive: { type: Boolean, default: true },
     joinedAt: { type: Date, default: Date.now }
 }, {
@@ -29,14 +25,13 @@ const FamilyMembershipSchema = new Schema({
     timestamps: false
 });
 
-// Índice compuesto opcional: evitar duplicados a nivel de BD
+// Índice compuesto único: Un perfil no puede estar duplicado en la misma familia
 FamilyMembershipSchema.index({ profileId: 1, familyId: 1 }, { unique: true });
 
 const FamilyMembershipModel = mongoose.model<FamilyMembershipDocument>('FamilyMembership', FamilyMembershipSchema, 'family_memberships');
 
 
-//IMPLEMENTACIÓN DEL REPOSITORIO
-
+// --- 2. IMPLEMENTACIÓN (Cumpliendo tu Interfaz) ---
 
 export class MongoFamilyMembershipRepository implements IFamilyMembershipRepository {
 
@@ -51,30 +46,14 @@ export class MongoFamilyMembershipRepository implements IFamilyMembershipReposit
         return doc ? this.mapToDomain(doc) : null;
     }
 
-    // Validar si YA existe la relación (evitar duplicados)
-    async findByProfileAndFamilyId(profileId: string, familyId: string): Promise<FamilyMembership | null> {
-        const doc = await FamilyMembershipModel.findOne({ profileId, familyId }).lean<FamilyMembershipDocument>();
-        return doc ? this.mapToDomain(doc) : null;
-    }
-
-    // Listar "Mis Familias" (Dashboard)
-    async findAllByProfileId(profileId: string): Promise<FamilyMembership[]> {
-        const docs = await FamilyMembershipModel.find({ profileId }).lean<FamilyMembershipDocument[]>();
-        return docs.map(doc => this.mapToDomain(doc));
-    }
-
-    // Listar "Miembros de la Familia" (Configuración)
-    async findAllByFamilyId(familyId: string): Promise<FamilyMembership[]> {
-        const docs = await FamilyMembershipModel.find({ familyId }).lean<FamilyMembershipDocument[]>();
-        return docs.map(doc => this.mapToDomain(doc));
-    }
-
     async update(membership: FamilyMembership): Promise<FamilyMembership> {
         const data = this.mapToPersistence(membership);
         const updatedDoc = await FamilyMembershipModel.findByIdAndUpdate(
-            membership.id, data, { new: true }
+            membership.id,
+            data,
+            { new: true }
         ).lean<FamilyMembershipDocument>();
-        
+
         if (!updatedDoc) throw new Error("Membership not found");
         return this.mapToDomain(updatedDoc);
     }
@@ -83,14 +62,33 @@ export class MongoFamilyMembershipRepository implements IFamilyMembershipReposit
         await FamilyMembershipModel.deleteOne({ _id: id });
     }
 
-    //  MAPPERS PRIVADOS 
+    //  Validar relación específica
+    async findByProfileAndFamilyId(profileId: string, familyId: string): Promise<FamilyMembership | null> {
+        const doc = await FamilyMembershipModel.findOne({ profileId, familyId }).lean<FamilyMembershipDocument>();
+        return doc ? this.mapToDomain(doc) : null;
+    }
+
+    //  Listar mis familias
+    async findAllByProfileId(profileId: string): Promise<FamilyMembership[]> {
+        const docs = await FamilyMembershipModel.find({ profileId, isActive: true }).lean<FamilyMembershipDocument[]>();
+        return docs.map(doc => this.mapToDomain(doc));
+    }
+
+    //  Listar miembros de una familia
+    async findAllByFamilyId(familyId: string): Promise<FamilyMembership[]> {
+        const docs = await FamilyMembershipModel.find({ familyId, isActive: true }).lean<FamilyMembershipDocument[]>();
+        return docs.map(doc => this.mapToDomain(doc));
+    }
+
+    // --- MAPPERS (Traducción) ---
 
     private mapToDomain(doc: FamilyMembershipDocument): FamilyMembership {
+        // Asumiendo que tu entidad FamilyMembership tiene este constructor
         return new FamilyMembership(
             doc._id,
             doc.profileId,
             doc.familyId,
-            doc.role as FamilyRole, // Casting seguro gracias al Enum del Schema
+            doc.role as any, // 'admin' | 'member'
             doc.isActive,
             doc.joinedAt
         );

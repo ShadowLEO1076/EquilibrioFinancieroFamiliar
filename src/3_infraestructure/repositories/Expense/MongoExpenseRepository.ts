@@ -74,6 +74,22 @@ export class MongoExpenseRepository implements IExpenseRepository {
         if (!updated) throw new Error("Expense not found to update");
         return this.toDomain(updated);
     }
+    async sumCurrentMonthExpenses(profileId: string): Promise<number> {
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+        // Buscamos gastos de este perfil en este rango de fechas
+        const expenses = await expenseModel.find({
+            profileId: profileId,
+            date: { $gte: startOfMonth, $lte: endOfMonth }
+        }).lean();
+
+        // Sumamos el monto total
+        return expenses.reduce((acc, curr) => acc + curr.amount, 0);
+
+
+    }
 
     private toDomain(doc: any): Expense {
         return new Expense(

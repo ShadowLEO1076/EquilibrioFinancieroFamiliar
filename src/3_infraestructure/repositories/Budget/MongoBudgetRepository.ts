@@ -27,14 +27,14 @@ const BudgetSchema = new Schema({
     amount: { type: Number, required: true },
     spent: { type: Number, default: 0 },
     remaining: { type: Number, required: true },
-    
+
     // Sub-objeto Periodo
     period: {
         type: { type: String, enum: ['monthly', 'weekly', 'quarterly', 'yearly'] },
         startDate: Date,
         endDate: Date
     },
-    
+
     // Array de Alertas
     alerts: [{
         _id: false, // No queremos IDs internos para las alertas
@@ -82,6 +82,18 @@ export class MongoBudgetRepository implements IBudgetRepository {
 
     async delete(id: string): Promise<void> {
         await BudgetModel.deleteOne({ _id: id });
+    }
+
+
+    // src/3_infraestructure/repositories/Budget/MongoBudgetRepository.ts
+
+    // ... dentro de la clase ...
+    async sumTotalBudget(profileId: string): Promise<number> {
+        // Asumimos que los presupuestos son mensuales y están activos
+        const budgets = await BudgetModel.find({ profileId: profileId }).lean();
+
+        // Sumamos el monto total planificado
+        return budgets.reduce((acc, curr) => acc + curr.amount, 0);
     }
 
     // --- MAPPERS ---

@@ -1,16 +1,19 @@
-//importe lo que haya en la carpeta
 import { Family } from "./Family.js";
 
-//creación de la interfaz
+export interface IFamilyRepository {
 
-export interface IFamilyRepository{
+    // 1. Guardar una familia nueva
+    save(family: Family): Promise<Family>;
 
-    save(family: Family): Promise<Family>; // será un método asincrónico de save que devolverá la entidad guardada
-    findById(id: string): Promise<Family | null>; //buscará una entidad, así que... Necesita solo la id
-    update(family: Family): Promise<Family>; //devolverá el usuario actualizado para leerlo
-    delete(id: string): Promise<void>; //se eliminará la entidadd, por tanto necesitamos un void
-    findByInviteCode(inviteCode: string): Promise<Family | null>; //buscará una entidad por código de invitación    
-    // ... métodos anteriores ...
+    // 2. Buscar por ID (Solo devuelve datos de la familia: nombre, código...)
+    findById(id: string): Promise<Family | null>;
 
+    // 3. Buscar por Código (Para validar invitaciones)
+    findByInviteCode(inviteCode: string): Promise<Family | null>;
+
+    // 4. Actualizar (Por si cambian el nombre de la familia)
+    update(family: Family): Promise<Family>;
+
+    // 5. Eliminar la familia entera
+    delete(id: string): Promise<void>;
 }
-

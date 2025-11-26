@@ -1,9 +1,9 @@
 import { Budget } from "./Budget.js";
 
 export interface IBudgetRepository {
-    
+
     // Guardar un nuevo presupuesto
-    save(budget: Budget): Promise<Budget>; 
+    save(budget: Budget): Promise<Budget>;
 
     // Buscar uno específico (por ID)
     findById(id: string): Promise<Budget | null>;
@@ -16,4 +16,6 @@ export interface IBudgetRepository {
 
     // Borrar
     delete(id: string): Promise<void>;
+
+    sumTotalBudget(profileId: string): Promise<number>;
 }

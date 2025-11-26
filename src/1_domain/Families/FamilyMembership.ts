@@ -1,6 +1,11 @@
 // Archivo: src/1_domain/Families/FamilyMembership.ts
 
-export type FamilyRole = 'ADMIN' | 'MEMBER'; 
+export enum FamilyRole {
+  // El nombre es MAYÚSCULA (para usarlo en código), 
+  // pero el valor es minúscula (para la base de datos).
+  ADMIN = 'admin',
+  MEMBER = 'member'
+}
 
 export class FamilyMembership {
   constructor(
@@ -13,8 +18,8 @@ export class FamilyMembership {
   ) {
     if (!profileId) throw new Error('Membership requires a Profile ID');
     if (!familyId) throw new Error('Membership requires a Family ID');
-    if (!['ADMIN', 'MEMBER'].includes(role)) {
-        throw new Error('Invalid Family Role');
+    if (![FamilyRole.ADMIN, FamilyRole.MEMBER].includes(role)) {
+      throw new Error('Invalid Family Role');
     }
   }
 }
